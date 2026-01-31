@@ -1,0 +1,8 @@
+to create a virtual env:
+python3 -m venv venv
+
+to activate a virtual venv:
+venv source/Scripts/activate
+
+To go to local projects folder:
+cd C:\dev
