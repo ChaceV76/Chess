@@ -2,53 +2,54 @@
 import pygame
 import numpy as np
 
+class Squares():
+    def __init__(self, x: int, y: int):
+        self.x = int(x)
+        self.y = int(y)
+        self.rect = pygame.Rect((self.x, self.y), (80, 80))
+        self.base_color = pygame.Color("navajowhite")
+    
+    def set_color(self, color):
+        self.base_color = pygame.Color(color)
+    
+    def reset_color(): # Resets color
+        pass
+
+    def highlight_color(): # Highlights color when clicked and moved
+        pass
+
 # Sets up pygaame "Turning on Engine"
 pygame.init()
 screen = pygame.display.set_mode((1280, 640))
 clock = pygame.time.Clock()
 running = True
 
-
 # Create the test surface
 test_surface = pygame.Surface((640, 640))
-test_surface.fill('lightsalmon4')
+test_surface.fill('white')
 
-
-# Make a class for these squares and get their coordinates
-class Squares():
-    def __init__(self, x: int, y: int):
-        self.x = int(x)
-        self.y = int(y)
-        self.rect = pygame.Rect((self.x, self.y), (80, 80))
-
-    def get_x(self):
-        return self.x
     
-    def get_y(self):
-        return self.y
+grid = [] # intitilize a grid variable to append rows to
+num_rows = 8
+num_columns = 8
+
+for row in range(num_rows):
+    row_data = [] # construct a empty row
+    y = row * 80 
+    for column in range(num_columns): # iterate over columns now
+        x = column * 80
+        square = Squares(x, y) # create a squares object passing in the coordinates
+        if (row + column) % 2 == 0: # Condition to create the checker pattern
+            square.set_color('navajowhite')
+        else:
+            square.set_color('lightsalmon4')
+
+        row_data.append(square)
     
-# Create a 2D Numpy array to give us rows and columns
-chess_board = np.array([])
-    
-num_objects = 64
-
-# This loop will create a new row with the square objects
-for i in range(num_objects):
-    new_square = Squares(0, 0)
-    chess_board.vstack(new_square)
-
-pygame.draw.rect(test_surface, 'navajowhite', A8.rect)
+    grid.append(row_data)
+    chess_board = np.array(grid, dtype='object')
 
 
-
-
-'''
-# Make a loop that skips over to the right by 80 width and fills a 80x80 navajo white rectangle after each 4th iteration move down a line
-for index, _ in enumerate(range(63)):
-    x = square.copy()
-    x.move(80, 0)
-    pygame.draw.rect(test_surface, 'navajowhite', x)
-'''
 
 while running:
     # pygame.QUIT event means the user clicked X to close your window
