@@ -19,9 +19,9 @@ def main():
 
     chess_grid = grid_construction(8, 8, 80) # Stores the grid object
 
-    chess_coordinates = coordinates(chess_grid)
+    # chess_coordinates = coordinates(chess_grid) # Constructs the coordinates
     
-    draw_grid(chess_grid, test_surface) # Draw the grid
+    draw_grid(chess_grid, test_surface) # Draws the grid
     
     
     """THIS IS THE LOOP WHILE THE GAME RUNS. THIS IS WHAT WE SEE ON THE SCREEN"""
@@ -35,7 +35,7 @@ def main():
         # RENDER GAME HERE USING BLIT
         screen.blit(test_surface, (320, 0))
 
-        mouse(chess_grid, chess_coordinates) # Using the mouse
+        mouse(chess_grid) # Using the mouse
 
         # flip() the display to put work on screen
         pygame.display.flip()
