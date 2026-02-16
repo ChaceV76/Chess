@@ -5,14 +5,14 @@ from board import coordinates
 class Mouse():
     def __init__(self):
         self.state = pygame.mouse.get_pressed() # Get the state of the mouse if pressed or not
-        self.position = pygame.mouse.get_pos() # Get the position of the mouse
         self.click = pygame.mouse.get_focused() # Check if the display is receiving mouse input
 
     def get_position(self):
+        self.position = pygame.mouse.get_pos() 
         return self.position
     
 
-def mouse(grid):
+def mouse(grid, board_offset):
 
     mouse = Mouse()
     
@@ -25,10 +25,18 @@ def mouse(grid):
         None, This function the mouse movement
     """
     
-    # mouse_pos = pygame.mouse.get_pos()
 
-    for row in grid: # Iterating though the rows into each specific square to access its attrubutes
+    mx, my = mouse.get_position()
+    target_square = get_square_under_mouse(grid, mx, my, board_offset)
+    return target_square
+
+def get_square_under_mouse(grid, mx, my, board_offset):
+    local_mx = mx - board_offset
+    local_my = my  
+    
+    for row in grid:
         for square in row:
-            if square.rect.collidepoint(mouse.get_position()):
-                print("Collision with square at", square.coordinates)
-                break
+            # Check if the square's rect contains the translated mouse point
+            if square.rect.collidepoint(local_mx, local_my):
+                return square
+    return None

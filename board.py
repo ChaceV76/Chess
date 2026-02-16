@@ -9,8 +9,9 @@ class Squares():
     Class Parameter: 
         None
     Attributes: 
-        x: Coordinate in the horizontal plane (int/float)
-        y: Coordinate in the vertical plane (int/float)
+        x: Screen coordinate in the horizontal plane (int/float)
+        y: Screen coordinate in the vertical plane (int/float)
+        Coordinates: The game coordinates (Ex:A4) (int/float)
         rect: The rectangle itself (object)
         base_color: The default color of the square (object)
         color: The current color of the square, in any state (object)
@@ -37,7 +38,7 @@ class Squares():
         self.color = pygame.Color('Yellow')
 
     
-def grid_construction(num_rows, num_columns, width):
+def grid_construction(num_rows, num_columns, width, board_offset):
     """
     Purpose: 
         Constructs a numpy grid in 2d nested for loops
@@ -46,7 +47,7 @@ def grid_construction(num_rows, num_columns, width):
         num_columns: # of columns (int)
         width: size of the square (int)
     Return Value:
-        It will return a 2d numpy grid
+        It will return a 2d numpy grid (object)
     """
 
     grid = []
@@ -94,56 +95,23 @@ def coordinates(row, column):
     Purpose: 
         Iterates over the grid and assigns each square a chess coordinate 
     Parameters:
-        grid: A pygame object
+        rows: # of rows (int)
+        columns: # of columns (int)
     Return Value:
         A coordinate dictionary with all possible coordinates in chess notation
     """
     
     coordinate_dict = {}
 
-            #2/9 Message
-            '''
-            Instead of iterating throygh the whole grid assign the coordinates to each square 1 by 1
-            '''
-            if col_index == 0:
-                key = f"A{8 - row_index}"
-                value = (row_index, col_index)
-                coordinate_dict.update([(key, value)])
+    letters = "ABCDEFGH"
 
-            elif col_index == 1:
-                key = f"B{8 - row_index}"
-                value = (row_index, col_index)
-                coordinate_dict.update([(key, value)])
+    char = letters[column]
+    key = f"{char}{8 - row}"
+    value = (row, column)
 
-            elif col_index == 2:
-                key = f"C{8 - row_index}"
-                value = (row_index, col_index)
-                coordinate_dict.update([(key, value)])
+    coordinate_dict.update([(key, value)]) # Store all the coordinates into a dict   
+    key = coordinate_dict.keys() # Get the key itself
 
-            elif col_index == 3:
-                key = f"D{8 - row_index}"
-                value = (row_index, col_index)
-                coordinate_dict.update([(key, value)])
+    return key
 
-            elif col_index == 4:
-                key = f"E{8 - row_index}"
-                value = (row_index, col_index)
-                coordinate_dict.update([(key, value)])
-
-            elif col_index == 5:
-                key = f"F{8 - row_index}"
-                value = (row_index, col_index)
-                coordinate_dict.update([(key, value)])
-
-            elif col_index == 6:
-                key = f"G{8 - row_index}"
-                value = (row_index, col_index)
-                coordinate_dict.update([(key, value)])
-
-            else:
-                key = f"H{8 - row_index}"
-                value = (row_index, col_index)
-                coordinate_dict.update([(key, value)])
-            
-    return coordinate_dict
-
+    
