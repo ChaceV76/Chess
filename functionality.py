@@ -1,42 +1,43 @@
 import pygame
 import numpy
-from board import coordinates
+
 
 class Mouse():
-    def __init__(self):
-        self.state = pygame.mouse.get_pressed() # Get the state of the mouse if pressed or not
-        self.click = pygame.mouse.get_focused() # Check if the display is receiving mouse input
 
     def get_position(self):
         self.position = pygame.mouse.get_pos() 
         return self.position
     
-
-def mouse(grid, board_offset):
-
-    mouse = Mouse()
+    def get_state(self):
+        self.state = pygame.mouse.get_pressed()
+        return self.state
     
+    
+def get_square_under_mouse(grid: object, global_mx: int, global_my: int, board_offset: int) -> object:
     """
-    Purpose: 
-        Provides mouse functionality over the grid
+    Purpose:
+        Convert the global position (0-1280) to the local position on the board (0-640px) when clicking the board
     Parameters:
-        grid: A pygame object
-    Return Value:
-        None, This function the mouse movement
+        grid: The grid we are playing on (Object)
+        mx: The global x-position of the mouse (int)
+        my: The global y-position of the mouse (int)
+        board_offset: How far the board is from the end of the screen
+    Return Value: 
+        Return the grid's chess coordinates
     """
     
+    local_mx = global_mx - board_offset
+    local_my = global_my  
 
-    mx, my = mouse.get_position()
-    target_square = get_square_under_mouse(grid, mx, my, board_offset)
-    return target_square
-
-def get_square_under_mouse(grid, mx, my, board_offset):
-    local_mx = mx - board_offset
-    local_my = my  
+    # 2. Check if the click is actually on the board
+    if 0 <= local_mx < 640 and 0 <= local_my < 640:
+        # 3. Use math to find the array indices (80 is square width)
+        col = local_mx // 80
+        row = local_my // 80
+        
+        # 4. Return the Square object from your numpy grid
+        square = grid[row][col] # Get the square
+        return square
+        
+    return None # Return None if they clicked the black sidebar
     
-    for row in grid:
-        for square in row:
-            # Check if the square's rect contains the translated mouse point
-            if square.rect.collidepoint(local_mx, local_my):
-                return square
-    return None

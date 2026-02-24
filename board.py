@@ -22,8 +22,8 @@ class Squares():
         self.y = int(y)
         self.coordinates = (row, column)
         self.rect = pygame.Rect((self.x, self.y), (80, 80))
-        self.base_color = pygame.Color("white") # Sets our default color, "white" is just for the sake ofgetting initialized
-        self.color = self.base_color # Current color whether it's default, highlited, or getting rested
+        self.base_color = pygame.Color("white") # Sets our default color, "white" is just for the sake of getting initialized
+        self.color = self.base_color # Current color whether it's default, highlited, or getting reseted
         
     def set_coordinates(self, grid_coordinates): # Set the square to a chess coordinate
         self.coordinates = grid_coordinates
@@ -34,11 +34,12 @@ class Squares():
     def reset_color(self): # Resets back to base color
         self.color = self.base_color
 
-    def highlight_color(self): # Highlights color when clicked and moved
-        self.color = pygame.Color('Yellow')
+    def highlight_color(self, surface): # Highlights color when clicked and moved
+        self.color = pygame.Color('yellow')
+        surface.fill(self.color, self.rect)
+        
 
-    
-def grid_construction(num_rows, num_columns, width, board_offset):
+def grid_construction(num_rows: int, num_columns: int, width: int) -> object:
     """
     Purpose: 
         Constructs a numpy grid in 2d nested for loops
@@ -67,14 +68,13 @@ def grid_construction(num_rows, num_columns, width, board_offset):
             row_data.append(square)
     
         grid.append(row_data) # add rows to the rid
-    numpy_grid = np.array(grid, dtype='object') # Convert to numpy array
 
-            
+    numpy_grid = np.array(grid, dtype='object') # Convert to numpy array
     return numpy_grid
 
 
 
-def draw_grid(grid, test_surface):  
+def draw_grid(grid: object, test_surface: object) -> None:  
     """
     Purpose: 
         Draws the 2d numpy grid onto the screen 
@@ -90,7 +90,7 @@ def draw_grid(grid, test_surface):
             pygame.draw.rect(test_surface, square.base_color, square.rect)
 
 
-def coordinates(row, column):
+def coordinates(row : int, column: int) -> dict:
     """
     Purpose: 
         Iterates over the grid and assigns each square a chess coordinate 
@@ -109,8 +109,7 @@ def coordinates(row, column):
     key = f"{char}{8 - row}"
     value = (row, column)
 
-    coordinate_dict.update([(key, value)]) # Store all the coordinates into a dict   
-    key = coordinate_dict.keys() # Get the key itself
+    coordinate_dict.update([(key, value)]) # Store all the coordinates into a dict  
 
     return key
 
