@@ -1,6 +1,7 @@
 import pygame
 import numpy as np
-
+import pieces
+import sys
 
 class Squares():
     """
@@ -23,22 +24,24 @@ class Squares():
         self.coordinates = (row, column)
         self.rect = pygame.Rect((self.x, self.y), (80, 80))
         self.base_color = pygame.Color("white") # Sets our default color, "white" is just for the sake of getting initialized
-        self.color = self.base_color # Current color whether it's default, highlited, or getting reseted
+        self.color = self.base_color # Current color whether it's default, highlighted, or getting reseted
+        self.highlighted = False
+        self.piece = None 
         
-    def set_coordinates(self, grid_coordinates): # Set the square to a chess coordinate
+        
+    def set_coordinates(self, grid_coordinates: dict) -> None: # Set the square to a chess coordinate
         self.coordinates = grid_coordinates
     
-    def set_board_color(self, color): # initializes the board color
+    def set_board_color(self, color: str) -> None: # initializes the board color
         self.base_color = pygame.Color(color) # This is where the real base color comes through
     
-    def reset_color(self): # Resets back to base color
+    def reset_color(self) -> None: # Resets back to base color
         self.color = self.base_color
 
-    def highlight_color(self, surface): # Highlights color when clicked and moved
-        self.color = pygame.Color('yellow')
-        surface.fill(self.color, self.rect)
-        
+    def set_piece(self, specific_piece: object) -> None: 
+        self.piece = specific_piece
 
+    
 def grid_construction(num_rows: int, num_columns: int, width: int) -> object:
     """
     Purpose: 
@@ -53,25 +56,42 @@ def grid_construction(num_rows: int, num_columns: int, width: int) -> object:
 
     grid = []
 
+    # Layout for the starting pieces in back row
+    back_row = [pieces.Rook, pieces.Knight, pieces.Bishop, pieces.Queen, pieces.King, pieces.Bishop, pieces.Knight, pieces.Rook]
+
     for row in range(num_rows):
         row_data = [] # construct a empty row
         y = row * width
         for column in range(num_columns): # iterate over columns now
             x = column * width
             square = Squares(x, y, row, column) # create a squares object passing in the coordinates
-            square.set_coordinates(coordinates(row, column))
-            if (row + column) % 2 == 0: # Condition to create the checker pattern
+            square.set_coordinates(coordinates(row, column)) 
+
+            '''Condition to create the checker pattern'''
+            if (row + column) % 2 == 0: 
                 square.set_board_color('navajowhite')
             else:
                 square.set_board_color('lightsalmon4')
-
+            
+            '''This condition will be used to check if pieces should be generated on the row'''
+            if row in [0, 1, 6, 7]:
+                if row == 0 or row == 7: # if its in the first and last row
+                    if row == 0: # if it's the top back row assign the pieces color to black
+                        square.set_piece(back_row[column]("black"))
+                    else:
+                        square.set_piece(back_row[column]("white")) # set it color to white
+                else:
+                    if row == 1:
+                        square.set_piece(pieces.Pawn("black"))
+                    else:
+                        square.set_piece(pieces.Pawn("white"))
+                
             row_data.append(square)
     
         grid.append(row_data) # add rows to the rid
 
     numpy_grid = np.array(grid, dtype='object') # Convert to numpy array
     return numpy_grid
-
 
 
 def draw_grid(grid: object, test_surface: object) -> None:  
@@ -89,6 +109,16 @@ def draw_grid(grid: object, test_surface: object) -> None:
         for square in row:
             pygame.draw.rect(test_surface, square.base_color, square.rect)
 
+            if square.highlighted:
+                print(f"Highlighting {square.coordinates}")
+                test_surface.fill((255, 255, 0), square.rect)
+                
+
+             # draw the piece on top if one exists
+            if square.piece is not None:
+                piece_surface = square.piece.load_piece
+                test_surface.blit(piece_surface, square.rect)
+            
 
 def coordinates(row : int, column: int) -> dict:
     """
@@ -103,14 +133,17 @@ def coordinates(row : int, column: int) -> dict:
     
     coordinate_dict = {}
 
-    letters = "ABCDEFGH"
+    try:
+        letters = "ABCDEFGH"
 
-    char = letters[column]
-    key = f"{char}{8 - row}"
-    value = (row, column)
+        char = letters[column]
+        key = f"{char}{8 - row}"
+        value = (row, column)
 
-    coordinate_dict.update([(key, value)]) # Store all the coordinates into a dict  
-
-    return key
+        coordinate_dict.update([(key, value)]) # Store all the coordinates into a dict  
+        return key
+    
+    except KeyError:
+        raise SystemExit('Key does not exist')
 
     

@@ -1,11 +1,10 @@
 import pygame
 import numpy as np
+import sys
 from board import grid_construction
 from board import draw_grid
 from board import coordinates
 from functionality import get_square_under_mouse
-from pieces import Pawn
-
 
 
 def main():
@@ -20,15 +19,11 @@ def main():
     game_surface = pygame.Surface((640, 640))
     SCREEN_OFFSET_X = 320 # How far the regular pygame surface is from the chess board surface
     chess_grid = grid_construction(8, 8, 80) # Constucts and stores the grid object
-    pawn = Pawn(220, 0)
+    
 
-    
-    
     """THIS IS THE LOOP WHILE THE GAME RUNS. THIS IS WHAT WE SEE ON THE SCREEN"""
     while running:
         for event in pygame.event.get():
-            draw_grid(chess_grid, game_surface) # Draws the grid
-
             if event.type == pygame.QUIT: # pygame.QUIT event means the user clicked X to close your window
                 running = False
 
@@ -37,21 +32,21 @@ def main():
                 clicked_square = get_square_under_mouse(chess_grid, mx, my, SCREEN_OFFSET_X)
         
                 if clicked_square:
-                # Now we can interact with the square object!
+                    for row in chess_grid: # reset all squares first
+                        for square in row:
+                            square.highlighted = False
+
+                    clicked_square.highlighted = True
                     print(f"Clicked: {clicked_square.coordinates}")
-                    clicked_square.highlight_color(game_surface)
-
-                    
+                
                     
 
-        
+        # RENDERS THE GAME HERE USING BLIT
         screen.fill('black')
-
-        # RENDER GAME HERE USING BLIT
+        draw_grid(chess_grid, game_surface) # Draws the grid
         screen.blit(game_surface, (SCREEN_OFFSET_X, 0))
-        screen.blit(pawn.surface, pawn.rect)
+           
         
-
         # flip() the display to put work on screen
         pygame.display.flip()
 

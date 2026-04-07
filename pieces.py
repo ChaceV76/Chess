@@ -1,35 +1,61 @@
 """This file will be for creating class and properties for each unique piece"""
 import pygame
+import os.path 
+
+base = os.path.dirname(__file__)  # Main Directory
+
 
 class Pawn:
-    def __init__(self, x: int, y: int):
-        self.piece = pygame.image.load('images/pawn.png').convert_alpha()
-        self.surface = self.piece # create a surface that matches with out image size
-        self.resized_piece = pygame.transform.scale(self.surface, (16, 16)) 
-        self.rect = self.surface.get_rect() # Create a rect out of our surface for collision
-        self.rect.topleft = (x, y)  # Position it
-
+    def __init__(self, color):
+        self.load_piece = pygame.transform.scale(
+            pygame.image.load(os.path.join('images', 'pawn.png')).convert_alpha(),
+            (80, 80)  # match square size
+        )
+        self.color = color
 
 class Bishop:
-    pass
+    def __init__(self, color):
+        self.load_piece = pygame.transform.scale(
+            pygame.image.load(os.path.join('images', 'bishop.png')).convert_alpha(),
+            (80, 80)  # match square size
+        )
+        self.color = color
+
 
 class Knight:
-    pass
+    def __init__(self, color):
+        self.load_piece = pygame.transform.scale(
+            pygame.image.load(os.path.join('images', 'knight.png')).convert_alpha(),
+            (80, 80)  # match square size
+        )
+        self.color = color
+
 
 class Rook:
-    pass
+    def __init__(self, color):
+        self.load_piece = pygame.transform.scale(
+            pygame.image.load(os.path.join('images', 'rook.png')).convert_alpha(),
+            (80, 80)  # match square size
+        )
+        self.color = color
+    
 
 class Queen(Bishop, Rook):
-    pass
+    def __init__(self, color):
+        self.load_piece = pygame.transform.scale(
+           pygame.image.load(os.path.join('images', 'Queen.png')).convert_alpha(),
+           (80, 80)  # match square size
+        )
+        self.color = color
+
+    
 
 class King(Queen):
-    pass
+    def __init__(self, color):
+        self.load_piece = pygame.transform.scale(
+            pygame.image.load(os.path.join('images', 'king.png')).convert_alpha(),
+            (80, 80)  # match square size
+        )
+        self.color = color
 
-'''
-Create two classes for teams inherting all the pieces
-class White(Pawn, Bishop, Knight, Rook, Queen, King):
-    pass
 
-class Black(Pawn, Bishop, Knight, Rook, Queen, King):
-    pass
-'''
